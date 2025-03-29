@@ -1,5 +1,7 @@
-import { IUser, UserRole } from '@/types/user.types';
-import mongoose, { Schema, Document } from 'mongoose';
+import { UserRole,IUser } from "@/types/user.types";
+import mongoose, { Schema, Document } from "mongoose";
+
+
 
 const UserSchema: Schema = new Schema(
   {
@@ -8,12 +10,12 @@ const UserSchema: Schema = new Schema(
     password: { type: String, required: true },
     role: { type: String, enum: Object.values(UserRole), required: true },
     phone: { type: String },
-    department: { type: String },
+    department: { type: Schema.Types.ObjectId, ref: "Department" },
     campus: { type: String },
     year: { type: Number },
     isActive: { type: Boolean, default: true },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-export default mongoose.model<IUser>('User', UserSchema);
+export default mongoose.model<IUser>("User", UserSchema);

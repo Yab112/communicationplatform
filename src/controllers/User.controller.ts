@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
+import User from '../models/user.model';
 import { createUserSchema } from '../validators/user.validator';
 import { generateAuthToken } from '../utils/auth';  // Import the utils
 import { comparePassword, hashPassword } from '@/utils/passwordUtils';
