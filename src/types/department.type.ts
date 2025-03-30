@@ -10,3 +10,8 @@ export interface IResource extends Document {
   url: string;
   uploadedBy: mongoose.Types.ObjectId;
 }
+
+export interface ICourse extends Document {
+  name: string;
+  department: mongoose.Types.ObjectId;
+}
