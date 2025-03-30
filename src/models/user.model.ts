@@ -10,7 +10,7 @@ const UserSchema: Schema = new Schema(
     password: { type: String, required: true },
     role: { type: String, enum: Object.values(UserRole), required: true },
     phone: { type: String },
-    department: { type: Schema.Types.ObjectId, ref: "Department" },
+    department: { type: Schema.Types.ObjectId, ref: "Department", required: true },
     campus: { type: String },
     year: { type: Number },
     isActive: { type: Boolean, default: true },
