@@ -1,36 +1,31 @@
-import { env } from 'process';
-import { createClient } from 'redis';
+import { env } from "process";
+import { createClient } from "redis";
 
-// Type for our Redis client
-export type RedisClient = ReturnType<typeof createClient>;
-
-const client = createClient({
-  username:env.REDIS_USER,
+// Create Redis client
+const redisClient = createClient({
+  username: env.REDIS_USER,
   password: env.REDIS_PASSWORD,
   socket: {
     host: env.REDIS_HOST,
     port: 10310,
-    tls: true, 
-    reconnectStrategy: (retries) => Math.min(retries * 100, 5000) // Exponential backoff
-  }
+    tls: true,
+    reconnectStrategy: (retries) => Math.min(retries * 100, 5000),
+  },
 });
 
 // Error handling
-client.on('error', (err) => console.error('Redis Client Error:', err));
-client.on('ready', () => console.log('Redis connected successfully'));
+redisClient.on("error", (err) => console.error("❌ Redis Error:", err));
+redisClient.on("ready", () => console.log("✅ Redis connected"));
 
-// Connect only once
-let isConnected = false;
-export const getRedisClient = async (): Promise<RedisClient> => {
-  if (!isConnected) {
-    await client.connect();
-    isConnected = true;
-  }
-  return client;
-};
+(async () => {
+  await redisClient.connect();
+})();
 
 // Graceful shutdown
-process.on('SIGINT', async () => {
-  await client.quit();
-  console.log('Redis connection closed');
+process.on("SIGINT", async () => {
+  await redisClient.quit();
+  console.log("🔴 Redis connection closed");
 });
+
+// Export Redis client
+export default redisClient;
