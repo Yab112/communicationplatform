@@ -3,20 +3,21 @@ import jwt from "jsonwebtoken";
 import User from "@/models/user.model";
 import redisClient from "@/config/redis";
 import { sendOTPEmail } from "@/services/email.service";
-import { generateOTP, verifyOTP, storeOTP } from "@/utils/otp";
+import { deleteotp, verifyOTP } from "@/utils/otp";
 import { env } from "@/config/env";
 import { ERROR_MESSAGES } from "@/errors/error.constants";
 import { comparePassword, hashPassword } from "@/utils/passwordUtils";
+import { generateToken } from "@/utils/jwt";
 
 const registerUser = async (userData: any) => {
-  const { name, email, password, phone, campus, year } = userData;
+  const { name, email, password, phone, campus, year,department } = userData;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new Error(ERROR_MESSAGES.EMAIL_IN_USE);
 
   const hashedPassword = hashPassword(password)
 
-  const user = new User({ name, email, password: hashedPassword, phone, campus, year, isActive: false });
+  const user = new User({ name, email, password: hashedPassword, phone, campus, year, isActive: false ,department});
   await user.save();
 
   await sendOTPEmail(email);
@@ -29,8 +30,8 @@ const verifyOTPService = async (email: string, otp: string) => {
   const user = await User.findOneAndUpdate({ email }, { isActive: true }, { new: true });
   if (!user) throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
 
-  await redisClient.del(`otp:${email}`);
-  return { success: true };
+  await deleteotp(`otp:${email}`);
+  return generateToken(user.id, user.role);
 };
 
 const resendOTP = async (email: string) => {
@@ -40,16 +41,15 @@ const resendOTP = async (email: string) => {
   await sendOTPEmail(email);
 };
 
-const loginUser = async (email: string, password: string) => {
-  const user = await User.findOne({ email });
+const loginUser = async (StuID: string, password: string) => {
+  const user = await User.findOne({ StuID });
   if (!user) throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
   if (!user.isActive) throw new Error(ERROR_MESSAGES.ACCOUNT_NOT_VERIFIED);
 
   const isMatch = await comparePassword(password, user.password);
   if (!isMatch) throw new Error(ERROR_MESSAGES.INVALID_CREDENTIALS);
 
-  const token = jwt.sign({ userId: user.id, role: user.role }, env.JWT_SECRET, { expiresIn: "7d" });
-  return token;
+  return generateToken(user.id, user.role);
 };
 
 const requestPasswordReset = async (email: string) => {

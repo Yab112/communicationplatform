@@ -10,3 +10,8 @@ export const verifyOTP = async (email: string, otp: string) => {
   const storedOTP = await redisClient.get(`otp:${email}`);
   return storedOTP === otp;
 };
+
+
+export const deleteotp = async (email:string)=>{
+  await redisClient.del(`otp:${email}`);
+}

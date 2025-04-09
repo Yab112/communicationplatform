@@ -1,14 +1,19 @@
 import { Router } from "express";
 import * as authController from "@/controllers/auth.controller";
+import { validateRequest } from "@/middleware/validate";
+import {  loginUserSchema, resendOTPSchema, resetPasswordSchema } from "@/validators/user.validator";
 
 const router = Router();
+// router.post("/register", validateRequest(createUserSchema), authController.register);
+// router.post("/verify", validateRequest(verifyOTPSchema), authController.verifyAccount);
 
-router.post("/register", authController.register);
-router.post("/verify", authController.verifyAccount);
-router.post("/resend-otp", authController.resendOTP);
-router.post("/login", authController.login);
-router.post("/request-password-reset", authController.requestPasswordReset);
-router.post("/reset-password", authController.resetPassword);
-router.post("/logout", authController.logout);
+
+
+//Student Auth Routes
+router.post("/login", validateRequest(loginUserSchema), authController.login);
+router.post("/resend-otp", validateRequest(resendOTPSchema), authController.resendOTP);
+router.post("/logout", authController.logout); 
+router.post("/request-password-reset", validateRequest(resendOTPSchema), authController.requestPasswordReset);
+router.post("/reset-password", validateRequest(resetPasswordSchema), authController.resetPassword);
 
 export default router;
