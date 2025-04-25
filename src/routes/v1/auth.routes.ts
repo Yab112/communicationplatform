@@ -7,8 +7,6 @@ const router = Router();
 // router.post("/register", validateRequest(createUserSchema), authController.register);
 // router.post("/verify", validateRequest(verifyOTPSchema), authController.verifyAccount);
 
-
-
 //Student Auth Routes
 router.post("/login", validateRequest(loginUserSchema), authController.login);
 router.post("/resend-otp", validateRequest(resendOTPSchema), authController.resendOTP);

@@ -13,7 +13,7 @@ export const createUserSchema = Joi.object({
 });
 
 export const loginUserSchema = Joi.object({
-  email: Joi.string().email().required(),
+  StuID: Joi.string().required(),
   password: Joi.string().required(),
 });
 
