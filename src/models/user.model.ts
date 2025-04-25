@@ -6,14 +6,14 @@ import mongoose, { Schema, Document } from "mongoose";
 const UserSchema: Schema = new Schema(
   {
     name: { type: String, required: true },
+    StuID :{type:String,required:true,unique:true},
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: Object.values(UserRole), required: true },
     phone: { type: String },
-    department: { type: Schema.Types.ObjectId, ref: "Department", required: true },
-    campus: { type: String },
+    campus: { type: String }, 
     year: { type: Number },
-    isActive: { type: Boolean, default: true },
+    department: {type:String,required:true}
   },
   { timestamps: true }
 );

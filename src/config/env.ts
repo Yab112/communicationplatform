@@ -15,7 +15,10 @@ export const env = cleanEnv(process.env, {
 
   // MongoDB
   MONGO_URI: str(),
-
+   //email
+  EMAIL_USER :str(),
+  EMAIL_PASS :str(),
+  EMAIL_FROM :str(),
   // JWT Authentication
   JWT_SECRET: str(),
   JWT_EXPIRES_IN: str({ default: '7d' }),
